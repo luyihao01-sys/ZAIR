@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+  <title>ZENITH — Sovereign Yield Terminal</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <script
+    src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
+
+    :root {
+      --bg: #050505;
+      --bg2: #0a0a0a;
+      --bg3: #111;
+      --bg4: #161616;
+      --line: rgba(255, 255, 255, 0.06);
+      --line2: rgba(255, 255, 255, 0.03);
+      --t1: #eee;
+      --t2: #888;
+      --t3: #555;
+      --t4: #333;
+      --ac: #4ee8d0;
+      --ac2: #2bc4aa;
+      --blue: #4a8eff;
+      --red: #ff4a5e;
+      --amber: #dda530;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--t1);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased
+    }
+
+    .mono {
+      font-family: 'Geist Mono', 'JetBrains Mono', monospace
+    }
+
+    /* Subtle ambient glow */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -40%;
+      left: 30%;
+      width: 40%;
+      height: 80%;
+      background: radial-gradient(ellipse, rgba(78, 232, 208, 0.012), transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+      animation: drift 20s ease-in-out infinite alternate
+    }
+
+    @keyframes drift {
+      0% {
+        transform: translate(0, 0)
+      }
+
+      100% {
+        transform: translate(-5%, 8%)
+      }
+    }
+
+    /* Top nav */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      height: 44px;
+      background: rgba(5, 5, 5, 0.92);
+      backdrop-filter: blur(30px);
+      border-bottom: 1px solid var(--line)
+    }
+
+    .nav-l {
+      display: flex;
+      align-items: center;
+      gap: 16px
+    }
+
+    .nav-logo {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--t1)
+    }
+
+    .nav-logo span {
+      color: var(--ac)
+    }
+
+    .nav-nodes {
+      display: flex;
+      gap: 12px
+    }
+
+    .node {
+      font-size: 8px;
+      font-family: 'Geist Mono', monospace;
+      color: var(--t3);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      letter-spacing: 0.5px
+    }
+
+    .node-dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%
+    }
+
+    .node-on {
+      background: var(--ac);
+      box-shadow: 0 0 4px var(--ac)
+    }
+
+    .node-off {
+      background: var(--t4)
+    }
+
+    .nav-r {
+      display: flex;
+      gap: 10px;
+      align-items: center
+    }
+
+    .nav-pill {
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 8px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      border: 1px solid
+    }
+
+    .pill-live {
+      color: var(--ac);
+      border-color: rgba(78, 232, 208, 0.2);
+      background: rgba(78, 232, 208, 0.04)
+    }
+
+    .pill-lp {
+      color: var(--blue);
+      border-color: rgba(74, 142, 255, 0.2);
+      background: rgba(74, 142, 255, 0.04);
+      cursor: pointer
+    }
+
+    .pill-lp:hover {
+      background: rgba(74, 142, 255, 0.08)
+    }
+
+    .blink {
+      animation: bk 2.5s ease-in-out infinite
+    }
+
+    @keyframes bk {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: 0.3
+      }
+    }
+
+    /* Hive Mind Network Panel */
+    .hive-panel {
+      background: linear-gradient(135deg, rgba(78, 232, 208, 0.04), rgba(74, 142, 255, 0.02));
+      border: 1px solid rgba(78, 232, 208, 0.15);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px
+    }
+
+    .hive-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--ac)
+    }
+
+    .hive-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--ac);
+      box-shadow: 0 0 4px var(--ac);
+      animation: pulse 2s infinite
+    }
+
+    .node-card {
+      background: #0a0a0a;
+      border: 1px solid rgba(78, 232, 208, 0.1);
+      border-radius: 6px;
+      padding: 8px;
+      margin-bottom: 6px;
+      font-family: 'Geist Mono', monospace;
+      font-size: 9px
+    }
+
+    .node-name {
+      color: var(--ac);
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center
+    }
+
+    .node-stat {
+      display: flex;
+      justify-content: space-between;
+      color: var(--t3);
+      margin: 3px 0;
+      font-size: 8px
+    }
+
+    .stat-label {
+      color: var(--t4)
+    }
+
+    .stat-value {
+      color: var(--t2);
+      font-weight: 500
+    }
+
+    .phi-badge {
+      display: inline-block;
+      background: rgba(74, 142, 255, 0.1);
+      color: var(--blue);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 7px;
+      font-weight: 600;
+      border: 1px solid rgba(74, 142, 255, 0.2)
+    }
+
+    .node-reward {
+      color: var(--ac);
+      font-weight: 600;
+      font-size: 8px
+    }
+
+    .hive-chart {
+      width: 100%;
+      height: 100px;
+      margin: 8px 0;
+      background: #0a0a0a;
+      border: 1px solid rgba(78, 232, 208, 0.1);
+      border-radius: 6px;
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      padding: 4px
+    }
+
+    .bar {
+      flex: 1;
+      background: linear-gradient(to top, var(--ac), rgba(78, 232, 208, 0.3));
+      border-radius: 2px;
+      min-height: 4px;
+      cursor: pointer;
+      transition: all 0.3s
+    }
+
+    .bar:hover {
+      background: linear-gradient(to top, var(--ac), var(--ac));
+      box-shadow: 0 0 8px var(--ac)
+    }
+
+    .hive-leaderboard {
+      font-family: 'Geist Mono', monospace;
+      font-size: 8px
+    }
+
+    .lb-row {
+      display: grid;
+      grid-template-columns: 40px 1fr 1fr 1fr;
+      gap: 8px;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(78, 232, 208, 0.08);
+      align-items: center
+    }
+
+    .lb-rank {
+      color: var(--t4);
+      font-weight: 600;
+      text-align: center
+    }
+
+    .lb-name {
+      color: var(--ac);
+      font-weight: 600
+    }
+
+    .lb-value {
+      color: var(--t3);
+      text-align: right
+    }
+
+    .bento {
+      display: grid;
+      grid-template-columns: 1fr 1.6fr 1fr 1fr;
+      grid-template-rows: auto 1fr auto;
+      gap: 1px;
+      min-height: calc(100vh - 44px);
+      position: relative;
+      z-index: 1
+    }
+
+    .cell {
+      background: var(--bg2);
+      padding: 20px;
+      position: relative
+    }
+
+    .lbl {
+      font-size: 8px;
+      font-weight: 600;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--t3);
+      margin-bottom: 14px
+    }
+
+    .lbl-r {
+      float: right;
+      font-size: 8px;
+      color: var(--t4);
+      font-family: 'Geist Mono', monospace;
+      font-weight: 400;
+      letter-spacing: 0
+    }
+
+    /* Treasury hero */
+    .hero-n {
+      font-family: 'Geist Mono', monospace;
+      font-size: 48px;
+      font-weight: 300;
+      color: var(--t1);
+      text-align: center;
+      padding: 20px 0 4px;
+      letter-spacing: -2px;
+      line-height: 1
+    }
+
+    .hero-s {
+      text-align: center;
+      font-size: 9px;
+      color: var(--t3);
+      letter-spacing: 1px;
+      text-transform: uppercase
+    }
+
+    .hero-src {
+      text-align: center;
+      font-size: 8px;
+      color: var(--t4);
+      margin-top: 6px;
+      font-family: 'Geist Mono', monospace
+    }
+
+    /* Protocol grid */
+    .pg {
+      width: 100%;
+      margin-top: 12px
+    }
+
+    .pg-row {
+      display: grid;
+      grid-template-columns: 1.4fr repeat(3, 1fr);
+      padding: 8px 0;
+      border-bottom: 1px solid var(--line2);
+      align-items: center
+    }
+
+    .pg-head {
+      font-size: 7px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--t4);
+      padding: 4px 0 6px
+    }
+
+    .pg-head>*:not(:first-child) {
+      text-align: right
+    }
+
+    .pg-row>*:not(:first-child) {
+      text-align: right;
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      font-weight: 500
+    }
+
+    .pg-name {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--t1)
+    }
+
+    .pg-chain {
+      font-size: 8px;
+      color: var(--t4);
+      margin-top: 1px
+    }
+
+    /* Risk markers */
+    .risk-mark {
+      font-size: 9px;
+      padding: 5px 8px;
+      margin-top: 4px;
+      border-left: 2px solid var(--amber);
+      background: rgba(221, 165, 48, 0.03);
+      color: var(--t2);
+      line-height: 1.5
+    }
+
+    /* Chart */
+    #depth {
+      width: 100%;
+      height: 260px
+    }
+
+    /* AUM */
+    .aum {
+      font-family: 'Geist Mono', monospace;
+      font-size: 40px;
+      font-weight: 300;
+      color: var(--t1);
+      text-align: center;
+      padding: 16px 0 4px;
+      letter-spacing: -1px
+    }
+
+    .aum-sub {
+      text-align: center;
+      font-size: 8px;
+      color: var(--t4);
+      letter-spacing: 1.5px;
+      text-transform: uppercase
+    }
+
+    /* Metric boxes */
+    .mbox {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1px;
+      margin: 14px 0;
+      background: var(--line2);
+      border-radius: 6px;
+      overflow: hidden
+    }
+
+    .mbox>* {
+      background: var(--bg);
+      text-align: center;
+      padding: 14px 8px
+    }
+
+    .m-lbl {
+      font-size: 7px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--t4);
+      font-weight: 600
+    }
+
+    .m-val {
+      font-family: 'Geist Mono', monospace;
+      font-size: 18px;
+      font-weight: 500;
+      margin-top: 4px;
+      color: var(--ac)
+    }
+
+    /* Progress */
+    .prog {
+      height: 2px;
+      background: var(--bg);
+      border-radius: 1px;
+      overflow: hidden;
+      margin: 8px 0 4px
+    }
+
+    .prog-fill {
+      height: 100%;
+      background: var(--ac);
+      border-radius: 1px;
+      transition: width 2s ease-out
+    }
+
+    /* Sig */
+    .sg {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 0;
+      font-size: 9px
+    }
+
+    .sg-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      flex-shrink: 0
+    }
+
+    .sg-on {
+      background: var(--ac);
+      box-shadow: 0 0 3px var(--ac)
+    }
+
+    .sg-off {
+      background: var(--t4)
+    }
+
+    .sg-k {
+      color: var(--t3);
+      min-width: 48px
+    }
+
+    .sg-v {
+      font-family: 'Geist Mono', monospace;
+      font-size: 8px;
+      color: var(--t4)
+    }
+
+    /* Intent proof */
+    .proof {
+      font-family: 'Geist Mono', monospace;
+      font-size: 9px;
+      line-height: 2.2;
+      color: var(--t3)
+    }
+
+    .proof-line {
+      display: grid;
+      grid-template-columns: 64px 52px 1fr;
+      padding: 1px 0;
+      border-bottom: 1px solid var(--line2)
+    }
+
+    .proof-ts {
+      color: var(--t4)
+    }
+
+    .proof-tag {
+      font-weight: 600
+    }
+
+    .pt-sys {
+      color: var(--t3)
+    }
+
+    .pt-data {
+      color: var(--blue)
+    }
+
+    .pt-warn {
+      color: var(--amber)
+    }
+
+    .pt-ok {
+      color: var(--ac)
+    }
+
+    .pt-err {
+      color: var(--red)
+    }
+
+    .proof-msg {
+      color: var(--t2)
+    }
+
+    /* Bottom dock */
+    .dock {
+      grid-column: 1/-1;
+      display: grid;
+      grid-template-columns: 1fr 1.6fr;
+      gap: 1px
+    }
+
+    .dock>* {
+      background: var(--bg2);
+      padding: 16px 20px
+    }
+
+    .pair {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--line2)
+    }
+
+    /* Bloomberg Auction Table */
+    .auction-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      font-family: 'Geist Mono', monospace;
+    }
+
+    .auction-table th {
+      font-size: 7px;
+      color: var(--t4);
+      text-transform: uppercase;
+      font-weight: 600;
+      padding: 6px 8px;
+      text-align: left;
+      border-bottom: 1px solid #222;
+    }
+
+    .auction-table th.r {
+      text-align: right;
+    }
+
+    .auction-table td {
+      font-size: 10px;
+      color: var(--t2);
+      padding: 10px 8px;
+      border-bottom: 1px solid #111;
+    }
+
+    .auction-table td.r {
+      text-align: right;
+    }
+
+    .auction-row-winner {
+      background: rgba(78, 232, 208, 0.03);
+    }
+
+    .auction-row-winner td {
+      border-bottom: 1px solid rgba(78, 232, 208, 0.15);
+      border-top: 1px solid rgba(78, 232, 208, 0.15);
+    }
+
+    .auction-row-winner td:first-child {
+      border-left: 2px solid var(--ac);
+    }
+
+    .badge-verified {
+      display: inline-block;
+      font-size: 8px;
+      font-weight: 600;
+      background: rgba(78, 232, 208, 0.08);
+      color: var(--ac);
+      padding: 4px 8px;
+      border-radius: 2px;
+      letter-spacing: 1px;
+      margin-top: 12px;
+      border: 1px solid rgba(78, 232, 208, 0.2);
+      box-shadow: 0 0 10px rgba(78, 232, 208, 0.1);
+    }
+
+    .pair:last-child {
+      border: none
+    }
+
+    .pair-k {
+      font-size: 10px;
+      color: var(--t3)
+    }
+
+    .pair-v {
+      font-family: 'Geist Mono', monospace;
+      font-size: 12px;
+      font-weight: 500
+    }
+
+    .hex {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 10px;
+      font-family: 'Geist Mono', monospace;
+      font-size: 8px;
+      color: rgba(78, 232, 208, 0.5);
+      word-break: break-all;
+      line-height: 1.8;
+      max-height: 80px;
+      overflow-y: auto
+    }
+
+    .xbtn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: transparent;
+      color: var(--t1);
+      font-family: 'Geist Mono', monospace;
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.4s ease;
+      margin-top: 8px
+    }
+
+    .xbtn:hover {
+      border-color: var(--ac);
+      color: var(--ac);
+      background: rgba(78, 232, 208, 0.03)
+    }
+
+    .foot {
+      text-align: center;
+      padding: 12px;
+      font-size: 7px;
+      color: var(--t4);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      grid-column: 1/-1;
+      background: var(--bg2)
+    }
+
+    @media(max-width:960px) {
+
+      .bento,
+      .dock {
+        grid-template-columns: 1fr
+      }
+    }
+
+    ::-webkit-scrollbar {
+      width: 2px
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--t4);
+      border-radius: 1px
+    }
+
+    @keyframes pulse {
+      0% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.4;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="nav">
+    <div class="nav-l">
+      <div class="nav-logo"><span>Z</span>ENITH</div>
+      <div class="nav-nodes">
+        <div class="node">
+          <div class="node-dot node-on blink"></div>SG-01 SINGAPORE
+        </div>
+        <div class="node">
+          <div class="node-dot node-on blink" style="animation-delay:0.8s"></div>AE-02 DUBAI
+        </div>
+        <div class="node">
+          <div class="node-dot node-off"></div>CH-03 ZURICH (STANDBY)
+        </div>
+      </div>
+    </div>
+    <div style="font-family:'Geist Mono',monospace;font-size:9px;color:var(--t4)" id="clock"></div>
+    <div class="nav-r">
+      <span class="nav-pill pill-live"><span
+          style="display:inline-block;width:4px;height:4px;border-radius:50%;background:var(--ac);margin-right:4px;box-shadow:0 0 4px var(--ac)"></span>LIVE</span>
+      <span class="nav-pill pill-lp" onclick="alert('Institutional wallet connect — coming in v5.0')">CONNECT LP
+        WALLET</span>
+    </div>
+  </div>
+
+  <div class="bento">
+
+    <!-- LEFT: Macro -->
+    <div class="cell" style="grid-row:span 2">
+      <div class="lbl">US Treasury Benchmark<span class="lbl-r" id="src"></span></div>
+      <div class="hero-n" id="rate">—</div>
+      <div class="hero-s">10-Year Constant Maturity</div>
+      <div class="lbl" style="margin-top:24px">Yield Spread Matrix</div>
+      <div class="pg">
+        <div class="pg-row pg-head">
+          <div>Protocol</div>
+          <div>APY</div>
+          <div>Spread</div>
+          <div>Net α</div>
+        </div>
+        <div id="ptb"></div>
+      </div>
+      <div class="lbl" style="margin-top:18px">Risk Markers</div>
+      <div id="risks"></div>
+    </div>
+
+    <!-- CENTER TOP: Chart -->
+    <div class="cell">
+      <div class="lbl">Spread Depth — 24H<span class="lbl-r" id="cb">—</span></div>
+      <div id="depth"></div>
+    </div>
+
+    <!-- CENTER MIDDLE: Live Auction -->
+    <div class="cell" style="padding-top:24px">
+      <div class="lbl">LIVE INTENT AUCTION (SOLVER MARKETPLACE)</div>
+      <div id="auction"></div>
+    </div>
+
+    <!-- RIGHT: Vault -->
+    <div class="cell" style="grid-row:span 2">
+      <div class="lbl">ZAIR PROTOCOL METRICS</div>
+      <div class="aum" id="aum">—</div>
+      <div class="aum-sub" style="margin-bottom:12px;">PROTOCOL AUM</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:24px;">
+        <button class="xbtn" style="margin:0;padding:6px;font-size:7px"
+          onclick="fetch('/api/deposit?amount=1000000',{method:'POST'}).then(()=>fetch('/api/pipeline')).then(r=>r.json()).then(renderDashboard)">MOCK
+          DEPOSIT</button>
+        <button class="xbtn" style="margin:0;padding:6px;font-size:7px"
+          onclick="fetch('/api/withdraw?amount=1000000',{method:'POST'}).then(()=>fetch('/api/pipeline')).then(r=>r.json()).then(renderDashboard)">MOCK
+          WITHDRAW</button>
+      </div>
+
+      <div class="lbl">EXTRACTABLE ARCHITECT FEES</div>
+      <div style="font-family:'Geist Mono',monospace;font-size:16px;color:var(--amber);margin:4px 0 8px 0"
+        id="arch-fees">$0.00</div>
+      <div class="prog" style="background:#111;border:1px solid #333;margin-bottom:12px">
+        <div class="prog-fill" id="pf"
+          style="background:linear-gradient(90deg, #554422, #dda139);box-shadow:0 0 8px rgba(221,161,57,0.4)"></div>
+      </div>
+
+      <div class="lbl">ON-CHAIN YIELD SPREAD</div>
+      <div style="font-family:'Geist Mono',monospace;font-size:11px;color:var(--ac);margin:4px 0 12px 0"
+        id="real-spread">—</div>
+
+      <div class="lbl" style="margin-top:24px">HARDWARE ENCLAVE PROOF (TEE)</div>
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">
+        <div
+          style="width:6px;height:6px;background:var(--ac);border-radius:50%;box-shadow:0 0 8px var(--ac);animation:pulse 2s infinite">
+        </div>
+        <div
+          style="font-family:'Geist Mono',monospace;font-size:9px;color:var(--ac);letter-spacing:1px;font-weight:600">
+          Logic Verified by Intel SGX</div>
+      </div>
+
+      <div class="lbl" style="font-size:7px;margin-top:12px;color:var(--t4)">MRENCLAVE (CODE HASH)</div>
+      <div
+        style="font-family:'Geist Mono',monospace;font-size:7px;color:var(--t2);background:#111;padding:4px;border:1px solid #222;word-break:break-all;margin-bottom:8px"
+        id="mrenclave">—</div>
+
+      <div class="lbl" style="font-size:7px;color:var(--t4)">ATTESTATION QUOTE</div>
+      <div
+        style="font-family:'Geist Mono',monospace;font-size:6px;color:var(--amber);background:#111;padding:4px;border:1px solid rgba(221,161,57,0.2);word-break:break-all;max-height:40px;overflow-y:auto;margin-bottom:12px"
+        id="quote-hex">—</div>
+
+      <div class="lbl">Oracle Chain</div>
+      <div id="sigs"></div>
+    </div>
+
+    <!-- CENTER BOTTOM: Intent Proof -->
+    <div class="cell" style="grid-column:2/4">
+      <div class="lbl">Decision Audit Trail<span class="lbl-r" id="act-badge">—</span></div>
+      <div class="proof" id="proof"></div>
+    </div>
+
+    <!-- RIGHT BOTTOM: Hive Mind Network -->
+    <div class="cell" style="grid-row:3/4;grid-column:4/5">
+      <div class="hive-panel">
+        <div class="hive-header">
+          <div class="hive-dot"></div>
+          DECENTRALIZED INFERENCE NETWORK
+        </div>
+        <div id="hive-status" style="font-size:8px;color:var(--t3);margin-bottom:8px"></div>
+        <div id="hive-nodes" style="max-height:180px;overflow-y:auto"></div>
+      </div>
+    </div>
+
+    <!-- DOCK -->
+    <div class="dock" style="grid-template-columns:1fr 1.6fr 1fr 1fr;">
+      <div>
+        <div class="lbl">Fee Schedule</div>
+        <div id="fees"></div>
+      </div>
+      <div>
+        <div class="lbl">Execution Payload</div>
+        <div class="hex" id="hx"></div>
+        <div style="font-family:'Geist Mono',monospace;font-size:7px;color:var(--t4);margin:6px 0" id="txh"></div>
+        <button class="xbtn" id="cpbtn"
+          onclick="navigator.clipboard.writeText(document.getElementById('hx').textContent).then(()=>{this.textContent='✓ payload copied';this.style.borderColor='var(--ac)';this.style.color='var(--ac)';setTimeout(()=>{this.textContent='copy multisend payload';this.style.borderColor='';this.style.color=''},2500)})">copy
+          multisend payload</button>
+      </div>
+      <div>
+        <div class="lbl">Hive Mind Tokens</div>
+        <div id="hive-tokens"></div>
+      </div>
+      <div>
+        <div class="lbl">Node Leaderboard</div>
+        <div id="hive-leaderboard"
+          style="max-height:100px;overflow-y:auto;font-family:'Geist Mono',monospace;font-size:8px"></div>
+      </div>
+    </div>
+
+    <div class="foot">Zenith Terminal v4.0 · Sovereign Alpha Protocol · Oracle-Verified Yield Intelligence</div>
+  </div>
+
+  <script>
+    function renderDashboard(D) {
+      const M = D.monitor || {}, S = D.solver || {}, B = D.bridge || {};
+      const tb = M.treasury_benchmark || {}, tr = tb.yield_pct || 0, sm = M.summary || {};
+
+      document.getElementById('rate').textContent = tr.toFixed(2) + '%';
+      document.getElementById('src').textContent = tb.source || '';
+
+      const ptb = document.getElementById('ptb');
+      ptb.innerHTML = '';
+      (M.protocols || []).forEach(p => {
+        const pl = p.profit_loss || {}, y = pl.rwa_yield_pct || 0, sp = (y - tr), n = pl.net_profit_pct || 0;
+        const sc = sp >= 1 ? 'var(--ac)' : sp >= 0.5 ? 'var(--amber)' : 'var(--red)';
+        const nc = n > 0 ? 'var(--ac)' : 'var(--red)';
+        ptb.innerHTML += `<div class="pg-row"><div><div class="pg-name">${p.protocol}</div><div class="pg-chain">${p.chain}</div></div>
+   <div>${y.toFixed(2)}%</div><div style="color:${sc}">${sp.toFixed(2)}%</div><div style="color:${nc}">${n >= 0 ? '+' : ''}${n.toFixed(2)}%</div></div>`;
+      });
+
+      const rk = document.getElementById('risks');
+      rk.innerHTML = '';
+      (S.risk_warnings || []).forEach(w => { rk.innerHTML += `<div class="risk-mark">${w.replace(/[⚠️🚨]/g, '').trim()}</div>`; });
+
+      const Z = D.zair_vault || {};
+      const aumRaw = String(Z.vault_aum || M.portfolio_usd || '10000000').replace(/[$,]/g, '');
+      document.getElementById('aum').textContent = '$' + Number(aumRaw).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      const archFees = Z.architect_fees || 0;
+      document.getElementById('arch-fees').textContent = '$' + archFees.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      const feePct = Math.min(100, Math.max(2, (archFees / 100000) * 100));
+      document.getElementById('pf').style.width = feePct + '%';
+
+      if (Z.on_chain_data) {
+        const o = Z.on_chain_data;
+        document.getElementById('real-spread').textContent = `${o.realized_spread_pct.toFixed(2)}% (USDY ${o.ondo_usdy_apy}% - AAVE ${o.aave_usdc_borrow}%)`;
+      }
+
+      if (Z.tee_attestation) {
+        document.getElementById('mrenclave').textContent = Z.tee_attestation.mrenclave || '—';
+        document.getElementById('quote-hex').textContent = Z.tee_attestation.quote_hex || '—';
+      }
+
+      const sg = document.getElementById('sigs');
+      sg.innerHTML = '';
+      [{ l: 'Monitor', o: M.oracle_signature }, { l: 'Solver', o: S.oracle_signature }, { l: 'Bridge', o: B.oracle_signature }].forEach(x => {
+        const ok = x.o && x.o.signature;
+        sg.innerHTML += `<div class="sg"><div class="sg-dot ${ok ? 'sg-on' : 'sg-off'}"></div>
+   <span class="sg-k">${x.l}</span><span class="sg-v">${ok ? x.o.signature.slice(0, 28) + '…' : '—'}</span></div>`;
+      });
+
+      // Removed ephemeral mock logs to use Immutable Audit Ledger instead
+      const act = S.primary_recommendation?.action || 'NONE';
+      const rec = S.primary_recommendation || {};
+      document.getElementById('act-badge').textContent = act;
+      document.getElementById('act-badge').style.color = act.includes('EMERGENCY') ? 'var(--red)' : act.includes('REDIRECT') ? 'var(--amber)' : 'var(--ac)';
+
+      const auc = document.getElementById('auction');
+      const A = D.auction_house || {};
+
+      function renderFinalAuction(A, container) {
+        let h = '<table class="auction-table"><thead><tr><th>SOLVER</th><th>ROUTING PATH</th><th class="r">GAS + SLIPPAGE</th><th class="r">NET YIELD</th></tr></thead><tbody>';
+        A.bids.forEach(b => {
+          const isW = A.winner && A.winner.solver === b.solver;
+          const rowClass = isW ? 'auction-row-winner' : '';
+          const nameColor = isW ? 'var(--ac)' : 'var(--t2)';
+          const netWeight = isW ? '600' : '400';
+
+          h += `<tr class="${rowClass}">
+      <td style="color:${nameColor};font-weight:600">${isW ? '✓ ' : ''}${b.solver}</td>
+      <td style="color:var(--t3)">${b.protocol_path}</td>
+      <td class="r" style="color:var(--red)">-${(b.gas_cost + b.estimated_slippage).toFixed(2)}%</td>
+      <td class="r" style="color:${nameColor};font-weight:${netWeight}">${b.net_apy_pct.toFixed(2)}%</td>
+    </tr>`;
+        });
+        h += '</tbody></table>';
+
+        if (A.winner) {
+          const taxStr = A.tax_usd_daily ? `$${A.tax_usd_daily.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '$0.00';
+          h += `<div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
+      <div class="badge-verified">SOLVER CONSENSUS VERIFIED</div>
+      <div style="font-family:'Geist Mono',monospace;font-size:9px;color:var(--amber);margin-top:12px;text-align:right">
+        <span style="color:var(--t4)">ROUTING TAX EXTRACTED: </span>${taxStr}
+      </div>
+    </div>`;
+        }
+        container.innerHTML = h;
+      }
+
+      if (A.bids && A.bids.length > 0) {
+        if (window.lastAuctionId === A.auction_id) {
+          renderFinalAuction(A, auc);
+        } else {
+          window.lastAuctionId = A.auction_id;
+          let h = '<div style="font-size:10px;color:var(--ac);margin-bottom:12px;animation:pulse 1s infinite;letter-spacing:1px;font-weight:600">LIVE BIDDING IN PROGRESS...</div>';
+          A.bids.forEach((b, i) => {
+            h += `<div style="font-family:'Geist Mono',monospace;font-size:9px;margin-bottom:12px;color:var(--t3)">
+          <div style="margin-bottom:6px;display:flex;justify-content:space-between">
+            <span>${b.solver} — Computing Path...</span>
+            <span style="color:var(--amber)">0x${Math.random().toString(16).slice(2, 10).toUpperCase()}</span>
+          </div>
+          <div style="background:#0a0a0a;height:6px;width:100%;position:relative;overflow:hidden;border:1px solid #222;border-radius:2px">
+            <div id="bar-${i}" style="position:absolute;top:0;left:0;height:100%;width:0%;background:var(--amber);transition:width 1.5s cubic-bezier(0.2, 0.8, 0.2, 1)"></div>
+          </div>
+        </div>`;
+          });
+          auc.innerHTML = h;
+
+          setTimeout(() => {
+            A.bids.forEach((b, i) => {
+              const bar = document.getElementById(`bar-${i}`);
+              if (bar) {
+                bar.style.width = (A.winner && A.winner.solver === b.solver) ? '100%' : (40 + Math.random() * 40) + '%';
+              }
+            });
+          }, 100);
+
+          setTimeout(() => {
+            renderFinalAuction(A, auc);
+          }, 1800);
+        }
+      } else {
+        auc.innerHTML = `<div style="font-size:11px;color:var(--t4);font-family:'Geist Mono',monospace;">Awaiting bids...</div>`;
+      }
+
+      const fe = document.getElementById('fees'), bt = B.batches || [];
+      if (bt.length && bt[0].tax_breakdown) {
+        const tx = bt[0].tax_breakdown;
+        fe.innerHTML = `<div class="pair"><span class="pair-k">Gross</span><span class="pair-v">$${tx.gross_amount_usd.toLocaleString()}</span></div>
+   <div class="pair"><span class="pair-k">Architect Fee (${tx.tax_pct}%)</span><span class="pair-v" style="color:var(--amber)">−$${tx.tax_amount_usd.toLocaleString()}</span></div>
+   <div class="pair"><span class="pair-k">Net Deploy</span><span class="pair-v" style="color:var(--ac)">$${tx.net_amount_usd.toLocaleString()}</span></div>`;
+      }
+
+      document.getElementById('hx').textContent = B.multi_send_data || '0x';
+      document.getElementById('txh').textContent = 'safe_tx_hash: ' + (B.safe_tx_hash || '—');
+    }
+
+    // Function to render DB audit trail
+    function renderAuditTrail(historyData) {
+      const pf = document.getElementById('proof');
+      if (!historyData || !historyData.history) return;
+      let log = '';
+      historyData.history.forEach(row => {
+        const d = new Date(row.timestamp * 1000);
+        const ts = d.toTimeString().slice(0, 8);
+        const act = row.action;
+        const cls = act.includes('EMERGENCY') ? 'pt-red' : act.includes('REDIRECT') ? 'pt-warn' : 'pt-ok';
+        const tag = act.split('_')[0]; // e.g. REDIRECT, MAINTAIN, SOLVER
+        const sigStr = tag === 'SOLVER' ? row.agent_signature : row.agent_signature.slice(0, 26) + '...';
+        log += `<div class="proof-line"><span class="proof-ts">${ts}</span><span class="proof-tag ${cls}">[${tag}]</span><span class="proof-msg" style="color:#aaa">Spread: ${row.spread.toFixed(2)}% | Sig: ${sigStr}</span></div>`;
+      });
+      pf.innerHTML = log;
+    }
+
+    // Function to render Hive Mind Network status
+    async function renderHiveMind() {
+      try {
+        const [statusRes, leaderboardRes] = await Promise.all([
+          fetch('/api/hive/network-status'),
+          fetch('/api/hive/leaderboard')
+        ]);
+
+        const status = await statusRes.json();
+        const leaderboardData = await leaderboardRes.json();
+
+        // Render network status in main panel
+        const statusEl = document.getElementById('hive-status');
+        const nodesEl = document.getElementById('hive-nodes');
+
+        if (statusEl && status.nodes_active !== undefined) {
+          statusEl.innerHTML = `Active Nodes: <span style="color:var(--ac);font-weight:600">${status.nodes_active}/${status.total_nodes}</span> · PHI: <span style="color:var(--blue);font-weight:600">${status.total_tokens_in_circulation.toFixed(0)}</span>`;
+        }
+
+        // Render individual nodes
+        if (nodesEl && status.nodes) {
+          let nodesHtml = '';
+          Object.entries(status.nodes).forEach(([nodeName, nodeData]) => {
+            const tokens = nodeData.cumulative_tokens || 0;
+            const accuracy = nodeData.avg_accuracy || 0;
+            const reward = nodeData.latest_reward_tier || 'none';
+            const rewardColor = reward === 'perfect_match' ? 'var(--ac)' : reward.includes('high') ? 'var(--blue)' : 'var(--amber)';
+
+            nodesHtml += `<div class="node-card">
+              <div class="node-name">${nodeName.split('_')[1]} <span class="phi-badge">${tokens.toFixed(0)} PHI</span></div>
+              <div class="node-stat"><span class="stat-label">Region:</span> <span class="stat-value">${nodeData.region}</span></div>
+              <div class="node-stat"><span class="stat-label">Accuracy:</span> <span class="stat-value">${accuracy.toFixed(1)}%</span></div>
+              <div class="node-stat"><span class="stat-label">Predictions:</span> <span class="stat-value">${nodeData.total_predictions}</span></div>
+              <div class="node-stat"><span class="stat-label">Latest Reward:</span> <span class="node-reward" style="color:${rewardColor}">${reward.toUpperCase()}</span></div>
+            </div>`;
+          });
+          nodesEl.innerHTML = nodesHtml;
+        }
+
+        // Render leaderboard in dock
+        const leaderboardEl = document.getElementById('hive-leaderboard');
+        if (leaderboardEl && leaderboardData.leaderboard) {
+          let lbHtml = '';
+          leaderboardData.leaderboard.slice(0, 5).forEach(entry => {
+            lbHtml += `<div class="lb-row">
+              <span class="lb-rank">#${entry.rank}</span>
+              <span class="lb-name">${entry.node_name.split('_')[1]}</span>
+              <span class="lb-value">${entry.cumulative_tokens.toFixed(0)} PHI</span>
+              <span class="lb-value">${entry.avg_accuracy.toFixed(1)}%</span>
+            </div>`;
+          });
+          leaderboardEl.innerHTML = lbHtml || '<div style="color:var(--t4);font-size:8px;">No nodes yet...</div>';
+        }
+
+        // Render token info in dock
+        const tokensEl = document.getElementById('hive-tokens');
+        if (tokensEl && status) {
+          tokensEl.innerHTML = `<div class="pair"><span class="pair-k">Total PHI</span><span class="pair-v" style="color:var(--blue)">${status.total_tokens_in_circulation.toFixed(2)}</span></div>
+            <div class="pair"><span class="pair-k">Active Nodes</span><span class="pair-v">${status.nodes_active}/${status.total_nodes}</span></div>
+            <div class="pair" style="border:none"><span class="pair-k">Inferences</span><span class="pair-v">${status.training_dataset_records}</span></div>`;
+        }
+      } catch (e) {
+        console.warn('Hive Mind render failed:', e);
+      }
+    }
+
+    // Initial render
+    renderDashboard(__PIPELINE_DATA__);
+    fetch('/api/audit-trail').then(r => r.json()).then(renderAuditTrail).catch(console.warn);
+    renderHiveMind(); // Initial Hive Mind render
+
+    // Live background pipeline updates (no page refresh)
+    setInterval(async () => {
+      try {
+        const [res, aRes] = await Promise.all([fetch('/api/pipeline'), fetch('/api/audit-trail')]);
+        const d = await res.json();
+        const a = await aRes.json();
+        renderDashboard(d);
+        renderAuditTrail(a);
+        renderHiveMind(); // Update Hive Mind every interval
+      } catch (e) { console.warn('Pipeline sync failed', e); }
+    }, 15000);
+
+    // Chart — LIVE real-time with /api/tick polling
+    if (typeof LightweightCharts !== 'undefined') {
+      const initM = __PIPELINE_DATA__.monitor || {};
+      const initTr = (initM.treasury_benchmark || {}).yield_pct || 4.47;
+
+      const ch = LightweightCharts.createChart(document.getElementById('depth'), {
+        layout: { background: { type: 'solid', color: 'transparent' }, textColor: '#333', fontSize: 9, fontFamily: 'Geist Mono' },
+        grid: { vertLines: { color: 'rgba(255,255,255,0.02)' }, horzLines: { color: 'rgba(255,255,255,0.02)' } },
+        timeScale: { timeVisible: true, secondsVisible: true, borderColor: 'rgba(255,255,255,0.06)', rightOffset: 5 },
+        rightPriceScale: { borderColor: 'rgba(255,255,255,0.06)' }, crosshair: { mode: 0 }
+      });
+
+      // Best protocol for main chart line
+      const best = (initM.protocols || []).reduce((a, b) => ((b.profit_loss || {}).net_profit_pct || 0) > ((a.profit_loss || {}).net_profit_pct || 0) ? b : a, { profit_loss: {} });
+      const bestName = best.protocol || '';
+      const bs = ((best.profit_loss || {}).rwa_yield_pct || 7) - initTr;
+
+      // Seed with 5 minutes of simulated history (ending 10s ago so live ticks are always newer)
+      const pts = [];
+      const t0 = Math.floor(Date.now() / 1000) - 310;
+      for (let i = 0; i < 100; i++) {
+        pts.push({ time: t0 + i * 3, value: Math.max(0, bs + Math.sin(i * 0.07) * 0.12 + Math.cos(i * 0.02) * 0.06 + (Math.random() - 0.5) * 0.04) });
+      }
+
+      const area = ch.addAreaSeries({
+        topColor: 'rgba(78,232,208,0.12)', bottomColor: 'rgba(78,232,208,0)',
+        lineColor: 'rgba(78,232,208,0.6)', lineWidth: 2,
+        priceFormat: { type: 'custom', formatter: v => v.toFixed(3) + '%' },
+        lastValueVisible: true, priceLineVisible: true,
+        priceLineColor: 'rgba(78,232,208,0.3)'
+      });
+      area.setData(pts);
+
+      // 1% threshold line (using PriceLine instead of a future data point to fix auto-scroll)
+      area.createPriceLine({
+        price: 1,
+        color: 'rgba(255,74,94,0.3)',
+        lineWidth: 1,
+        lineStyle: 2,
+        axisLabelVisible: false
+      });
+
+      ch.timeScale().scrollToRealTime();
+      document.getElementById('cb').textContent = bestName.split('(')[0].trim() + ' · LIVE TICKER';
+
+      // Live tick counter
+      let tickCount = 0;
+      const tickEl = document.createElement('div');
+      tickEl.style.cssText = 'position:absolute;top:8px;right:100px;font-family:Geist Mono,monospace;font-size:8px;color:var(--t4)';
+      document.getElementById('depth').parentElement.style.position = 'relative';
+      document.getElementById('depth').parentElement.appendChild(tickEl);
+
+      // Poll /api/tick every 3 seconds
+      let lastTime = pts[pts.length - 1].time;
+      async function fetchTick() {
+        try {
+          const res = await fetch('/api/tick');
+          const tick = await res.json();
+          const spread = tick.spreads[bestName] || tick.spreads[Object.keys(tick.spreads)[0]] || bs;
+          // Ensure strictly increasing time
+          const t = Math.max(tick.time, lastTime + 1);
+          area.update({ time: t, value: spread });
+          lastTime = t;
+          ch.timeScale().scrollToRealTime();
+          tickCount++;
+          tickEl.textContent = 'TICKS: ' + tickCount + ' · ' + new Date().toTimeString().slice(0, 8);
+        } catch (e) { console.warn('Tick fetch error:', e) }
+      }
+      setInterval(fetchTick, 3000);
+      setTimeout(fetchTick, 1000); // first tick after 1s delay
+    }
+
+    // No page reload — chart stays live
+  </script>
+</body>
+
+</html>

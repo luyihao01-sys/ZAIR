@@ -1,0 +1,90 @@
+{
+  "bridge_title": "Sovereign Executor Bridge — Safe Transaction Payload",
+  "generated_at": "2026-05-17T06:35:13.011700+08:00",
+  "epoch_utc": 1778970913,
+  "safe_address": "0x50Vere19n5AFe000000000000000000000000001",
+  "architect_wallet": "0xA2C41tECfEEwa11E7000000000000000000000002",
+  "usdc_token": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+  "allocation_usd": 1000000.0,
+  "protocol_tax_pct": 2.0,
+  "total_tax_usd": 20000.0,
+  "batches": [
+    {
+      "action": {
+        "action": "REDIRECT_TO_RISK_FREE",
+        "source_protocol": "Ondo Finance (USDY)",
+        "reason": "Spread (0.61%) below 1.0% minimum",
+        "spread_pct": 0.6139,
+        "net_yield_pct": -1.3861,
+        "recommendation": "Redirect capital to base risk-free pool"
+      },
+      "protocol": "Ondo Finance (USDY)",
+      "tax_breakdown": {
+        "gross_amount_usd": 1000000.0,
+        "tax_pct": 2.0,
+        "tax_amount_usd": 20000.0,
+        "net_amount_usd": 980000.0,
+        "tax_amount_wei": 20000000000,
+        "net_amount_wei": 980000000000
+      },
+      "transactions": [
+        {
+          "to": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "value": "0",
+          "data": "0xa9059cbb000000000000000000000000a2c41ecfeea11e7000000000000000000000002000000000000000000000000000000000000000000000000000000004a817c800",
+          "operation": 0,
+          "description": "Protocol Tax: $20,000.00 USDC → Architect Wallet"
+        },
+        {
+          "to": "0x83F20F44975D03b1b09e64809B757c47f942BEeA",
+          "value": "0",
+          "data": "0x6e553f65000000000000000000000000000000000000000000000000000000e42c8d480000000000000000000000000050ee195afe000000000000000000000000001000",
+          "operation": 0,
+          "description": "Deposit $980,000.00 into sDAI (risk-free redirect)"
+        }
+      ],
+      "transaction_count": 2
+    }
+  ],
+  "all_transactions": [
+    {
+      "to": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+      "value": "0",
+      "data": "0xa9059cbb000000000000000000000000a2c41ecfeea11e7000000000000000000000002000000000000000000000000000000000000000000000000000000004a817c800",
+      "operation": 0,
+      "description": "Protocol Tax: $20,000.00 USDC → Architect Wallet"
+    },
+    {
+      "to": "0x83F20F44975D03b1b09e64809B757c47f942BEeA",
+      "value": "0",
+      "data": "0x6e553f65000000000000000000000000000000000000000000000000000000e42c8d480000000000000000000000000050ee195afe000000000000000000000000001000",
+      "operation": 0,
+      "description": "Deposit $980,000.00 into sDAI (risk-free redirect)"
+    }
+  ],
+  "transaction_count": 2,
+  "multi_send_data": "0x00a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000044a9059cbb000000000000000000000000a2c41ecfeea11e7000000000000000000000002000000000000000000000000000000000000000000000000000000004a817c8000083f20f44975d03b1b09e64809b757c47f942beea000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000446e553f65000000000000000000000000000000000000000000000000000000e42c8d480000000000000000000000000050ee195afe000000000000000000000000001000",
+  "safe_tx_hash": "0x2da51d70b0b3ae6bffb409e669f97f9cdf27c104e3ac9a45f8f7cd1c90328c47",
+  "solver_intent": {
+    "raw_input": "目标收益率 5%，安全性最高",
+    "target_yield_pct": 5.0,
+    "risk_preference": "LOW",
+    "priority": "safety",
+    "language": "zh-CN"
+  },
+  "solver_signature": {
+    "algorithm": "HMAC-SHA256",
+    "signed_fields": [
+      "epoch_utc",
+      "summary",
+      "primary_recommendation"
+    ],
+    "signature": "2d749589b3ea43844222b30caddd9946a0c3932b94d2b19d290b67d511cfad8e",
+    "signer": "sovereign-intent-solver"
+  },
+  "oracle_signature": {
+    "algorithm": "HMAC-SHA256",
+    "signature": "f1c4f160225c785de64e291c2069be02b487fd699a320b27197021b86e157c91",
+    "signer": "sovereign-executor-bridge"
+  }
+}

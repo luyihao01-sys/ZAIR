@@ -1,0 +1,96 @@
+{
+  "report_title": "Sovereign Yield Monitor — Architect Tax Report",
+  "generated_at": "2026-05-17T06:20:36.496406+08:00",
+  "epoch_utc": 1778970036,
+  "treasury_benchmark": {
+    "series": "US 10-Year Treasury (DGS10)",
+    "yield_pct": 4.47,
+    "source": "FRED CACHED (2026-05-14 — network unreachable)"
+  },
+  "management_fee_pct": 2.0,
+  "portfolio_usd": "$10,000,000",
+  "protocols": [
+    {
+      "protocol": "Ondo Finance (USDY)",
+      "description": "Tokenized short-duration US Treasuries — retail & DeFi composable",
+      "chain": "Ethereum / Solana / Mantle",
+      "current_yield_pct": 4.9709,
+      "yield_range_pct": "4.80 – 5.35",
+      "tvl_usd": "$650,000,000",
+      "profit_loss": {
+        "rwa_yield_pct": 4.9709,
+        "treasury_yield_pct": 4.47,
+        "management_fee_pct": 2.0,
+        "net_profit_pct": -1.4991,
+        "profitable": false
+      },
+      "tax_extraction": {
+        "hourly_extraction_usd": 0.0,
+        "daily_extraction_usd": 0.0,
+        "annual_extraction_usd": 0.0,
+        "portfolio_usd": 10000000
+      }
+    },
+    {
+      "protocol": "BlackRock BUIDL",
+      "description": "USD Institutional Digital Liquidity Fund — institutional grade",
+      "chain": "Ethereum (Securitize)",
+      "current_yield_pct": 4.7241,
+      "yield_range_pct": "4.50 – 5.25",
+      "tvl_usd": "$1,800,000,000",
+      "profit_loss": {
+        "rwa_yield_pct": 4.7241,
+        "treasury_yield_pct": 4.47,
+        "management_fee_pct": 2.0,
+        "net_profit_pct": -1.7459,
+        "profitable": false
+      },
+      "tax_extraction": {
+        "hourly_extraction_usd": 0.0,
+        "daily_extraction_usd": 0.0,
+        "annual_extraction_usd": 0.0,
+        "portfolio_usd": 10000000
+      }
+    },
+    {
+      "protocol": "Centrifuge (CFG)",
+      "description": "Tokenized private credit — SME trade finance & invoices",
+      "chain": "Centrifuge Chain / Ethereum",
+      "current_yield_pct": 7.9399,
+      "yield_range_pct": "6.50 – 9.20",
+      "tvl_usd": "$280,000,000",
+      "profit_loss": {
+        "rwa_yield_pct": 7.9399,
+        "treasury_yield_pct": 4.47,
+        "management_fee_pct": 2.0,
+        "net_profit_pct": 1.4699,
+        "profitable": true
+      },
+      "tax_extraction": {
+        "hourly_extraction_usd": 16.78,
+        "daily_extraction_usd": 402.71,
+        "annual_extraction_usd": 146990.0,
+        "portfolio_usd": 10000000
+      }
+    }
+  ],
+  "summary": {
+    "total_hourly_tax_usd": 16.78,
+    "total_daily_tax_usd": 402.72,
+    "total_annual_tax_usd": 146992.8,
+    "profitable_protocols": 1,
+    "total_protocols_analyzed": 3
+  },
+  "oracle_signature": {
+    "algorithm": "HMAC-SHA256",
+    "signed_fields": [
+      "epoch_utc",
+      "summary",
+      "treasury_yield_pct"
+    ],
+    "canonical_payload": "{\"epoch_utc\":1778970036,\"summary\":{\"profitable_protocols\":1,\"total_annual_tax_usd\":146992.8,\"total_daily_tax_usd\":402.72,\"total_hourly_tax_usd\":16.78,\"total_protocols_analyzed\":3},\"treasury_yield_pct\":4.47}",
+    "signature": "dd94b4393c9f78b05b10ce7052f7cb30c63ca7033054181109dd031680de858e",
+    "signer": "sovereign-architect-oracle",
+    "key_source": "env:SOVEREIGN_SIGNING_KEY"
+  }
+}

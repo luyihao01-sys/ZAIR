@@ -1,0 +1,41 @@
+# Zair Contracts - Smart Contract Development Requirements
+# Node.js 16+, npm or yarn
+
+# Hardhat development environment
+hardhat@latest
+@nomicfoundation/hardhat-toolbox@latest
+@nomicfoundation/hardhat-chai-matchers@latest
+@openzeppelin/hardhat-upgrades@latest
+
+# Solidity compiler
+solc@0.8.20
+
+# Testing and verification
+chai@latest
+ethers@latest
+hardhat-gas-reporter@latest
+solidity-coverage@latest
+
+# Contract interaction
+web3.py==6.11.2
+eth-account==0.10.0
+brownie>=1.20.0  # Alternative Brownie framework
+
+# OpenZeppelin contracts library
+@openzeppelin/contracts@latest
+@openzeppelin/contracts-upgradeable@latest
+
+# Deployment and security
+dotenv@latest
+axios@latest
+etherscan-verify@latest
+slither-analyzer@latest
+
+# Development tools
+prettier@latest
+prettier-plugin-solidity@latest
+eslint@latest
+
+# Testing utilities
+ganache-cli@latest
+truffle-assertions@latest

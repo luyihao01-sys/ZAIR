@@ -1,0 +1,115 @@
+# OpenAPI Specification for Zair Protocol
+
+openapi: 3.0.3
+info:
+  title: Zair Protocol API
+  description: API specification for the Zair Protocol Validator. This document defines the endpoints and data formats required for miners to interact with the network.
+  version: 1.0.0
+
+servers:
+  - url: https://api.zairprotocol.com
+    description: Production server
+  - url: https://staging.zairprotocol.com
+    description: Staging server
+
+paths:
+  /submit_inference:
+    post:
+      summary: Submit inference data to the Validator
+      description: This endpoint allows miners to submit their inference results for aggregation and validation. The submitted data must include an EIP-712 signature to ensure authenticity.
+      operationId: submitInference
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                asset_id:
+                  type: string
+                  description: Unique identifier for the asset being evaluated.
+                  example: "asset-12345"
+                composite_risk_score:
+                  type: number
+                  format: float
+                  description: The miner's calculated composite risk score for the asset.
+                  example: 72.5
+                confidence_level:
+                  type: number
+                  format: float
+                  description: The miner's confidence level in the risk assessment.
+                  example: 85.0
+                regional_sentiment:
+                  type: string
+                  enum: [bullish, neutral, bearish]
+                  description: The miner's assessment of regional sentiment.
+                  example: "neutral"
+                timestamp:
+                  type: string
+                  format: date-time
+                  description: ISO 8601 timestamp of when the inference was generated.
+                  example: "2026-05-18T12:34:56Z"
+                signature:
+                  type: string
+                  description: EIP-712 compliant signature of the submitted data.
+                  example: "0xabc123..."
+              required:
+                - asset_id
+                - composite_risk_score
+                - confidence_level
+                - regional_sentiment
+                - timestamp
+                - signature
+      responses:
+        '200':
+          description: Submission accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Inference data submitted successfully."
+        '400':
+          description: Invalid request data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "error"
+                  message:
+                    type: string
+                    example: "Invalid JSON schema."
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "error"
+                  message:
+                    type: string
+                    example: "Invalid or missing signature."
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "error"
+                  message:
+                    type: string
+                    example: "An unexpected error occurred."

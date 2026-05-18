@@ -1,0 +1,116 @@
+{
+  "solver_title": "Sovereign Intent Solver — Action Report",
+  "generated_at": "2026-05-17T06:27:34.396412+08:00",
+  "epoch_utc": 1778970454,
+  "intent": {
+    "raw_input": "目标收益率 5%，安全性最高",
+    "target_yield_pct": 5.0,
+    "risk_preference": "LOW",
+    "priority": "safety",
+    "language": "zh-CN"
+  },
+  "market_context": {
+    "treasury_10y_yield_pct": 4.47,
+    "spread_threshold_pct": 1.0,
+    "tvl_emergency_threshold_pct": 5.0,
+    "management_fee_pct": 2.0
+  },
+  "primary_recommendation": {
+    "action": "REDIRECT_TO_RISK_FREE",
+    "source_protocol": "Ondo Finance (USDY)",
+    "reason": "Spread (0.61%) below 1.0% minimum",
+    "spread_pct": 0.6139,
+    "net_yield_pct": -1.3861,
+    "recommendation": "Redirect capital to base risk-free pool"
+  },
+  "all_actions": [
+    {
+      "action": "REDIRECT_TO_RISK_FREE",
+      "source_protocol": "Ondo Finance (USDY)",
+      "reason": "Spread (0.61%) below 1.0% minimum",
+      "spread_pct": 0.6139,
+      "net_yield_pct": -1.3861,
+      "recommendation": "Redirect capital to base risk-free pool"
+    },
+    {
+      "action": "REDIRECT_TO_RISK_FREE",
+      "source_protocol": "BlackRock BUIDL",
+      "reason": "Spread (0.41%) below 1.0% minimum",
+      "spread_pct": 0.4077,
+      "net_yield_pct": -1.5923,
+      "recommendation": "Redirect capital to base risk-free pool"
+    }
+  ],
+  "emergency_exits": [],
+  "risk_free_alternatives": [
+    {
+      "action": "ALLOCATE_RISK_FREE",
+      "protocol": "sDAI (Spark/MakerDAO)",
+      "description": "Tokenized DAI Savings Rate — risk-free DeFi benchmark",
+      "chain": "Ethereum",
+      "yield_pct": 3.5,
+      "expected_net_yield_pct": 1.5,
+      "risk_tier": "MINIMAL"
+    },
+    {
+      "action": "ALLOCATE_RISK_FREE",
+      "protocol": "Ethena sUSDe",
+      "description": "Delta-neutral stablecoin yield via basis trade",
+      "chain": "Ethereum",
+      "yield_pct": 4.1,
+      "expected_net_yield_pct": 2.1,
+      "risk_tier": "LOW"
+    },
+    {
+      "action": "ALLOCATE_RISK_FREE",
+      "protocol": "Aave USDC",
+      "description": "Blue-chip lending protocol — variable supply rate",
+      "chain": "Ethereum / Arbitrum",
+      "yield_pct": 3.2,
+      "expected_net_yield_pct": 1.2,
+      "risk_tier": "MINIMAL"
+    }
+  ],
+  "risk_warnings": [
+    "⚠️ Ondo Finance (USDY): spread 0.61% < 1.0% threshold — insufficient alpha",
+    "⚠️ BlackRock BUIDL: spread 0.41% < 1.0% threshold — insufficient alpha",
+    "⚠️ Centrifuge (CFG): risk tier HIGH exceeds preference LOW"
+  ],
+  "tvl_monitor": {
+    "Ondo Finance (USDY)": {
+      "tvl_24h_ago": 650000000,
+      "tvl_current": 650845000,
+      "change_pct": 0.13,
+      "emergency": false
+    },
+    "BlackRock BUIDL": {
+      "tvl_24h_ago": 1800000000,
+      "tvl_current": 1787220000,
+      "change_pct": -0.71,
+      "emergency": false
+    },
+    "Centrifuge (CFG)": {
+      "tvl_24h_ago": 280000000,
+      "tvl_current": 285152000,
+      "change_pct": 1.84,
+      "emergency": false
+    }
+  },
+  "summary": {
+    "total_protocols_analyzed": 3,
+    "viable_allocations": 2,
+    "emergency_exits_triggered": 0,
+    "risk_free_alternatives_available": 3,
+    "risk_warnings_count": 3
+  },
+  "oracle_signature": {
+    "algorithm": "HMAC-SHA256",
+    "signed_fields": [
+      "epoch_utc",
+      "summary",
+      "primary_recommendation"
+    ],
+    "signature": "2d749589b3ea43844222b30caddd9946a0c3932b94d2b19d290b67d511cfad8e",
+    "signer": "sovereign-intent-solver"
+  }
+}
